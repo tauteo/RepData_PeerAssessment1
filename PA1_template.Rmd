@@ -38,6 +38,17 @@ p
 
 ## What is the average daily activity pattern?
 
+```{r}
+interval_data <- aggregate(steps ~ interval, data = steps_data, mean)
+max_interval <- interval_data[which(interval_data$steps == max(interval_data$steps)), ]
+g <- ggplot(data = interval_data, aes(interval, steps, label = interval))
+p <- g + geom_line() + 
+     geom_text(data = max_interval, label = as.integer(max_interval$steps), vjust = "inward", hjust = -0.5) +
+     geom_vline(aes(xintercept = interval_data[which(interval_data$steps == max(interval_data$steps)), ]$interval), col = "red", linetype = "dashed") + 
+     scale_x_continuous(breaks = c(0, 500, max_interval$interval, 1000, 1500, 2000)) + 
+     labs(title = "Average nr of steps per 5 minute interval", x = "5 minute interval nr", y = "Average steps")
+p
+```
 
 
 ## Imputing missing values
