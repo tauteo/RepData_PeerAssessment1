@@ -19,8 +19,22 @@ steps_data <- group_by(steps_data, date)
 
 
 ## What is mean total number of steps taken per day?
+```{r, echo=TRUE}
+library(ggplot2)
 
+total_steps <- steps_data %>% summarise(totalSteps = sum(steps, na.rm = TRUE))
 
+g <- ggplot(total_steps, aes(x = totalSteps))
+p <- g + geom_histogram(binwidth = 1000, color = "grey30", fill = "white") + 
+     geom_vline(aes(xintercept = mean(totalSteps, na.rm = TRUE), color = "mean"), linetype = "dashed") + 
+     geom_vline(aes(xintercept = median(totalSteps, na.rm = TRUE), color = "median"), linetype = "dashed") +
+     labs(title = "Histogram for total nr of steps per day", x = "Number of steps per day", y = "Count") + 
+     scale_colour_manual(name = "measures", values = c("mean" = "red", "median" = "blue"), labels = c("mean", "median")) +
+     annotate("text", x = mean(total_steps$totalSteps, na.rm = TRUE) - 1000, y = 10, label = as.integer(mean(total_steps$totalSteps, na.rm = TRUE)), colour = "red") + 
+     annotate("text", x = median(total_steps$totalSteps, na.rm = TRUE) + 1100, y = 9.5, label = as.integer(median(total_steps$totalSteps, na.rm = TRUE)), colour = "blue")
+
+p
+```
 
 ## What is the average daily activity pattern?
 
