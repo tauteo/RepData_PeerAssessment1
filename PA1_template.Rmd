@@ -10,6 +10,12 @@ output:
 
 ## Loading and preprocessing the data
 
+```{r, echo=TRUE, results='hide', message=FALSE}
+library(dplyr)
+
+steps_data <- read.csv("./data/activity.csv")
+steps_data <- group_by(steps_data, date)
+```
 
 
 ## What is mean total number of steps taken per day?
