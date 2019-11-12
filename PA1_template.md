@@ -1,7 +1,7 @@
 ---
 title: "Reproducible Research: Peer Assessment 1"
 author: "Otto Taute"
-date: "`r Sys.Date()`"
+date: "2019-11-12"
 output: 
   html_document: 
     keep_md: yes
@@ -10,7 +10,8 @@ output:
 
 ## Loading and preprocessing the data
 
-```{r, echo=TRUE, results='hide', message=FALSE}
+
+```r
 library(dplyr)
 
 steps_data <- read.csv("./data/activity.csv")
@@ -19,7 +20,8 @@ steps_data <- group_by(steps_data, date)
 
 
 ## What is mean total number of steps taken per day?
-```{r plot1, echo=TRUE}
+
+```r
 library(ggplot2)
 
 total_steps <- steps_data %>% summarise(totalSteps = sum(steps, na.rm = TRUE))
@@ -36,9 +38,12 @@ p <- g + geom_histogram(binwidth = 1000, color = "grey30", fill = "white") +
 p
 ```
 
+![](PA1_template_files/figure-html/plot1-1.png)<!-- -->
+
 ## What is the average daily activity pattern?
 
-```{r plot2}
+
+```r
 interval_data <- aggregate(steps ~ interval, data = steps_data, mean)
 max_interval <- interval_data[which(interval_data$steps == max(interval_data$steps)), ]
 g <- ggplot(data = interval_data, aes(interval, steps, label = interval))
@@ -50,12 +55,15 @@ p <- g + geom_line() +
 p
 ```
 
+![](PA1_template_files/figure-html/plot2-1.png)<!-- -->
+
 
 ## Imputing missing values
-There are `r sum(is.na(steps_data$steps))` missing values in the dataset.
+There are 2304 missing values in the dataset.
 
 These missing values can be imputed from the mean for the 5 minute interval across all days:
-```{r}
+
+```r
 steps_data <- steps_data %>% 
               group_by(interval) %>% 
               mutate(intervalMean = mean(steps, na.rm = TRUE))
@@ -69,7 +77,8 @@ total_steps <- steps_data %>%
 ```
 
 The resulting histogram shows a significant change in both the mean and the median as a result of the imputation. The mean and median are now equal.
-```{r plot3, fig.width=8}
+
+```r
 g <- ggplot(total_steps, aes(x = totalSteps))
 p <- g + geom_histogram(binwidth = 1000, color = "grey30", fill = "white") + 
      geom_vline(aes(xintercept = mean(totalSteps, na.rm = TRUE), color = "mean"), linetype = "dashed") + 
@@ -82,9 +91,12 @@ p <- g + geom_histogram(binwidth = 1000, color = "grey30", fill = "white") +
 p
 ```
 
+![](PA1_template_files/figure-html/plot3-1.png)<!-- -->
+
 
 ## Are there differences in activity patterns between weekdays and weekends?
-```{r plot4}
+
+```r
 steps_data <- ungroup(steps_data)
 
 steps_data$dayType <- factor(grepl("S(at|un)", 
@@ -107,3 +119,5 @@ p <- g + geom_line() +
      labs(title = "Mean number of steps per interval is slightly higher on weekends", x = "Interval", y = "Mean number of Steps")
 p
 ```
+
+![](PA1_template_files/figure-html/plot4-1.png)<!-- -->
