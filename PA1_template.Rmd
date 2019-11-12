@@ -52,6 +52,21 @@ p
 
 
 ## Imputing missing values
+There are `r sum(is.na(steps_data$steps))` missing values in the dataset.
+
+These missing values can be imputed from the mean for the 5 minute interval across all days:
+```{r}
+steps_data <- steps_data %>% 
+              group_by(interval) %>% 
+              mutate(intervalMean = mean(steps, na.rm = TRUE))
+steps_data[is.na(steps_data$steps), ]$steps <- steps_data[is.na(steps_data$steps), ]$intervalMean
+steps_data <- steps_data %>% 
+              select(-intervalMean) %>%
+              group_by(date)
+
+total_steps <- steps_data %>% 
+               summarise(totalSteps = sum(steps, na.rm = TRUE))
+```
 
 
 
