@@ -84,3 +84,26 @@ p
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
+```{r}
+steps_data <- ungroup(steps_data)
+
+steps_data$dayType <- factor(grepl("S(at|un)", 
+                             weekdays(as.Date(steps_data$date), abbr = TRUE)), 
+                             levels = c(TRUE, FALSE), 
+                             labels = c("weekend", "weekday"))
+
+mean_steps <- steps_data %>%
+              group_by(dayType, interval) %>%
+              summarise(meanSteps = mean(steps, na.rm = TRUE))
+
+mean_steps <- group_by(mean_steps, dayType)
+daymeans <- summarise(mean_steps, avg = mean(meanSteps))
+
+#qplot(interval, meanSteps, data = mean_steps, facets = . ~ dayType, geom = "line")
+g <- ggplot(mean_steps, aes(interval, meanSteps))
+p <- g + geom_line() + 
+     geom_hline(data = daymeans, aes(yintercept = avg), colour = "red", linetype = "dashed") +
+     facet_wrap(. ~ dayType, ncol = 1) + 
+     labs(title = "Mean number of steps per interval is slightly higher on weekends", x = "Interval", y = "Mean number of Steps")
+p
+```
