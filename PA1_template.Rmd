@@ -68,6 +68,19 @@ total_steps <- steps_data %>%
                summarise(totalSteps = sum(steps, na.rm = TRUE))
 ```
 
+The resulting histogram shows a significant change in both the mean and the median as a result of the imputation. The mean and median are now equal.
+```{r plot3, fig.width=8}
+g <- ggplot(total_steps, aes(x = totalSteps))
+p <- g + geom_histogram(binwidth = 1000, color = "grey30", fill = "white") + 
+     geom_vline(aes(xintercept = mean(totalSteps, na.rm = TRUE), color = "mean"), linetype = "dashed") + 
+     geom_vline(aes(xintercept = median(totalSteps, na.rm = TRUE), color = "median"), linetype = "dashed") +
+     labs(title = "Mean and median of total steps per day changes significantly with imputed data", x = "Number of steps per day", y = "Count") + 
+     scale_colour_manual(name = "measures", values = c("mean" = "red", "median" = "blue"), labels = c("mean", "median")) +
+     annotate("text", x = mean(total_steps$totalSteps, na.rm = TRUE) - 1000, y = 10, label = as.integer(mean(total_steps$totalSteps, na.rm = TRUE)), colour = "red") + 
+     annotate("text", x = median(total_steps$totalSteps, na.rm = TRUE) + 1100, y = 9.5, label = as.integer(median(total_steps$totalSteps, na.rm = TRUE)), colour = "blue")
+
+p
+```
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
